@@ -34,7 +34,8 @@ def get_max_salary(path):
     list_jobs = read(path)
     salaries = [
         int(row["max_salary"])
-        for row in list_jobs if row["max_salary"].isdigit()
+        for row in list_jobs
+        if row["max_salary"].isdigit()
     ]
     max_salary = max(salaries)
     return max_salary
@@ -45,36 +46,29 @@ def get_min_salary(path):
     list_jobs = read(path)
     salaries = [
         int(row["min_salary"])
-        for row in list_jobs if row["min_salary"].isdigit()
+        for row in list_jobs
+        if row["min_salary"].isdigit()
     ]
     max_salary = min(salaries)
     return max_salary
 
 
 def matches_salary_range(job, salary):
-    """Checks if a given salary is in the salary range of a given job
+    """Checks if a given salary is in the salary range of a given job"""
+    verify_keys = "max_salary" in job and "min_salary" in job
 
-    Parameters
-    ----------
-    job : dict
-        The job with `min_salary` and `max_salary` keys
-    salary : int
-        The salary to check if matches with salary range of the job
+    if not verify_keys:
+        raise ValueError()
+    elif (
+        type(job["min_salary"]) != int
+        or type(job["max_salary"]) != int
+        or type(salary) != int
+    ):
+        raise ValueError()
+    elif job["min_salary"] > job["max_salary"]:
+        raise ValueError()
 
-    Returns
-    -------
-    bool
-        True if the salary is in the salary range of the job, False otherwise
-
-    Raises
-    ------
-    ValueError
-        If `job["min_salary"]` or `job["max_salary"]` doesn't exists
-        If `job["min_salary"]` or `job["max_salary"]` aren't valid integers
-        If `job["min_salary"]` is greather than `job["max_salary"]`
-        If `salary` isn't a valid integer
-    """
-    pass
+    return job["min_salary"] <= salary <= job["max_salary"]
 
 
 def filter_by_salary_range(jobs, salary):
